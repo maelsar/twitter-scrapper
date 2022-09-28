@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Response
+from flask import Flask, render_template, request, redirect, Response, make_response
 import re
 
 import snscrape.modules.twitter as sntwitter
@@ -61,7 +61,8 @@ def post_form():
         limits = 500
 
     query = keywords + user + funtil + fsince
-    
+    if query is None or query == "":
+        query = "python"
     #return parameters
     return1 = request.form.get('r_url')
     return2 = request.form.get('r_date')
@@ -97,6 +98,8 @@ def post_form():
     #if return1 == '' and return2 == '' and return3 == '' and return4 == '':
     #    flash('You must check at least 1 Return Parameters')
     #    return redirect('/')
+    
+    
 
     r_param = return1 + return2 + return3 + return4
     r_param = r_param.rstrip()
@@ -162,24 +165,34 @@ def download_tweets():
         d_header = re.sub("[\[\]',]", "", d_header)
         col = d_header.split(" ")
         col = [x.lower() for x in col]
+        #col.insert(0, 'index')
         #col = str(col)
-        return Response(col, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
+        #return Response(col, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
 
         dtweets = []
-        #return d_param
+        #test = dquery + "   " + d_param + "    " + str(dlimits) + "     "+ str(col)
+        #return test
 
         for tweet in sntwitter.TwitterSearchScraper(dquery).get_items():
             #print(tweet)
             if len(dtweets) == dlimits:
                 break
             else:
-                dtweets.append([eval(d_param)])
+                dtweets.append(eval(d_param))
+                #return Response(dtweets, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
                 #tweets.append([tweet.date, tweet.content])
+        
             #print(tweets)
             #df = pd.DataFrame(tweets, columns=["Date", "Tweet"])
             #df.to_csv("test.csv")
             #print(df)
-        return redirect("/results")
+        dataframe = pd.DataFrame(dtweets, columns=col)
+        output = make_response(dataframe.to_csv(index=False))
+        output.headers["Content-Disposition"] = "attachment; filename=tweets.csv"
+        output.headers["Content-Type"] = "text/csv"
+        return output
+        #return Response(df, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
+        #return redirect("/results")
         #return Response(dtweets, mimetype="text/csv", headers={"Content-Disposition":"attachment;filename=tweets.csv"})
 
 if __name__ == "__main__":
