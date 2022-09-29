@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, Response, make_response
+from flask import Flask, render_template, request, redirect, make_response
 import re
 
 import snscrape.modules.twitter as sntwitter
@@ -68,11 +68,7 @@ def post_form():
     return2 = request.form.get('r_date')
     return3 = request.form.get('r_user')
     return4 = request.form.get('r_content')
-    #return5 = request.form.get('r_raw')
     r_param = ''
-    #if return5 == 'True':
-    #    r_param = 'tweet'
-    #else:
     if return1 == 'True': 
         return1 = 'tweet.url '
         t_header.append('URL')
@@ -94,13 +90,6 @@ def post_form():
     else: 
         return4 = ''
 
-    #Error Message if Return Parameter is None
-    #if return1 == '' and return2 == '' and return3 == '' and return4 == '':
-    #    flash('You must check at least 1 Return Parameters')
-    #    return redirect('/')
-    
-    
-
     r_param = return1 + return2 + return3 + return4
     r_param = r_param.rstrip()
     r_param = re.sub(' ', ', ', r_param)
@@ -117,20 +106,12 @@ def post_form():
         limit = 5
 
         for tweet in sntwitter.TwitterSearchScraper(query).get_items():
-            #print(tweet)
             if len(tweets) == limit:
                 break
             else:
                 tweets.append([eval(r_param)])
-                #tweets.append([tweet.date, tweet.content])
-        #print(tweets)
-        #df = pd.DataFrame(tweets, columns=["Date", "Tweet"])
-        #df.to_csv("test.csv")
-        #print(df)
 
         return tweets
-
-    #sample = [[["https://twitter.com/EmperorBTC/status/1573551964591632384","Sat, 24 Sep 2022 05:56:38 GMT","EmperorBTC","Had breakfast with Duck and his family. \n\nI wish all of you a great weekend with the family. https://t.co/gbqCQplu23"]],[["https://twitter.com/EmperorBTC/status/1572936580171730946","Thu, 22 Sep 2022 13:11:19 GMT","EmperorBTC","WHAT INDICATORS ARE THE BEST? \n\nThere are 2 indicators I used to hate and found illogical. \n\nThen found a trader who spent so much screentime using it, they were consistently profitable.\n\nRealised that maybe even stupid indicators become useful when spent enough time with it."]],[["https://twitter.com/EmperorBTC/status/1572649809437392896","Wed, 21 Sep 2022 18:11:47 GMT","EmperorBTC","FED HIKES LENDING RATE BY 0.75%, LIQUIDATING EVERYONE WHO WAS LONG OR SHORT. 1K CANDLE PRINTED IN A MINUTE LIQUIDATING $30 MILLION CONTRACTS. https://t.co/Az2tfr3rZ0"]],[["https://twitter.com/EmperorBTC/status/1572588677595025408","Wed, 21 Sep 2022 14:08:52 GMT","EmperorBTC","Fibonacci Master-Class Cheat Sheet. Stick this on your brain and be ready for the next Lesson. https://t.co/1iIll1t0QT"]],[["https://twitter.com/EmperorBTC/status/1572468505592868865","Wed, 21 Sep 2022 06:11:21 GMT","EmperorBTC","The market is going to have a decisive day, here is one advice.\n\nThe worst thing you can do is to bet huge on one trade.\n\nAim should be to get as much experience and feedback from the market by betting small, more times.\n\nSmall bets but more bets &gt; Big Bets."]]]
 
     #Add to Search History
     if request.method == 'POST':
@@ -141,10 +122,8 @@ def post_form():
         conn.commit()
         conn.close()
 
-    #return get_tweets(query, r_param)
     t_limit = str(limits)
     return render_template("results.html", tweets=get_tweets(query, r_param), query=query, r_param=r_param, t_header=t_header, t_limit=t_limit)
-    #return redirect('/')
 
 
 @app.route("/about")
@@ -161,39 +140,22 @@ def download_tweets():
         d_param = request.form.get('r_param')
         dlimits = int(request.form.get('dlimit'))
         d_header = request.form.get('t_header')
-        #keywords = re.sub("\s+", ' ', keywords)
         d_header = re.sub("[\[\]',]", "", d_header)
         col = d_header.split(" ")
         col = [x.lower() for x in col]
-        #col.insert(0, 'index')
-        #col = str(col)
-        #return Response(col, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
 
         dtweets = []
-        #test = dquery + "   " + d_param + "    " + str(dlimits) + "     "+ str(col)
-        #return test
-
         for tweet in sntwitter.TwitterSearchScraper(dquery).get_items():
             #print(tweet)
             if len(dtweets) == dlimits:
                 break
             else:
                 dtweets.append(eval(d_param))
-                #return Response(dtweets, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
-                #tweets.append([tweet.date, tweet.content])
-        
-            #print(tweets)
-            #df = pd.DataFrame(tweets, columns=["Date", "Tweet"])
-            #df.to_csv("test.csv")
-            #print(df)
         dataframe = pd.DataFrame(dtweets, columns=col)
         output = make_response(dataframe.to_csv(index=False))
         output.headers["Content-Disposition"] = "attachment; filename=tweets.csv"
         output.headers["Content-Type"] = "text/csv"
         return output
-        #return Response(df, mimetype='text/csv', headers={"Content-disposition": "attachment; filename=tweets.csv"})
-        #return redirect("/results")
-        #return Response(dtweets, mimetype="text/csv", headers={"Content-Disposition":"attachment;filename=tweets.csv"})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
