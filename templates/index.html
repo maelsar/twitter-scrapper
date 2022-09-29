@@ -17,14 +17,15 @@
             <a class="navbar-item" style="font-family: 'Montserrat Alternates', sans-serif; font-size: 30px;" href="/">
               Twitter Scraper
             </a>
-            <span class="navbar-burger" data-target="navbarMenuHeroA">
+            <span class="navbar-burger" id="burger">
               <span></span>
               <span></span>
               <span></span>
             </span>
+            
           </div>
           <div id="navbarMenuHeroA" class="navbar-menu">
-            <div class="navbar-end">
+            <div class="navbar-end" id="nav-links">
               <a class="navbar-item is-active" href="/">
                 Find Tweets
               </a>
@@ -36,7 +37,7 @@
         </div>
       </nav>
     </div>
-  
+
     <!-- Hero content: will be in the middle -->
     <div class="hero-body">
       <div class="container has-text-centered">
@@ -137,31 +138,33 @@
           
         </p>
 
-        <div class="container has-text-centered">
-          <p class="subtitle is-4" style="margin-bottom: 5px; margin-top: 20px"">Recent Searches</p>
+        <div class="container has-text-centered" >
+          <p class="subtitle is-4" style="margin-bottom: 5px; margin-top: 20px">Recent Searches</p>
         </div>
-        <table class="table is-striped is-narrow is-hoverable is-fullwidth">
-          <tr>
-              <th>Index</th>
-              <th>Date Searched</th>
-              <th>Keywords Field</th>
-              <th>User Field</th>
-              <th>Limit</th>
-              <th>Beginning Date</th>
-              <th>End Date</th>
-          </tr>
-          {% for item in data %}
-          <tr>
-            <td>{{ item['index'] }}</td>
-            <td>{{ item['date_searched'] }}</td>
-            <td>{{ item['keywords_search'] }}</td>
-            <td>{{ item['user_search'] }}</td>
-            <td>{{ item['limit'] }}</td>
-            <td>{{ item['beginning_date'] }}</td>
-            <td>{{ item['end_date'] }}</td>
-          </tr>
-          {% endfor %}
-      </table>
+        <div style="overflow-y: auto;">
+          <table class="table is-striped is-narrow is-hoverable is-fullwidth" >
+            <tr>
+                <th>Index</th>
+                <th>Date Searched</th>
+                <th>Keywords Field</th>
+                <th>User Field</th>
+                <th>Limit</th>
+                <th>Beginning Date</th>
+                <th>End Date</th>
+            </tr>
+            {% for item in data %}
+            <tr>
+              <td>{{ item['index'] }}</td>
+              <td>{{ item['date_searched'] }}</td>
+              <td>{{ item['keywords_search'] }}</td>
+              <td>{{ item['user_search'] }}</td>
+              <td>{{ item['limit'] }}</td>
+              <td>{{ item['beginning_date'] }}</td>
+              <td>{{ item['end_date'] }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+      </div>
       </div>
     </div>
 

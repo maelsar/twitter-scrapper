@@ -30,6 +30,8 @@ def post_form():
     s_until = request.form.get('s_until')
     limits = int(request.form.get('limit'))
     t_header = []
+    h_fsince = None
+    h_funtil = None
     if keywords == '' or keywords == None:
         h_keywords = None
         keywords = ''
@@ -91,13 +93,11 @@ def post_form():
         return4 = ''
 
     r_param = return1 + return2 + return3 + return4
+    if r_param == '' or r_param is None:
+        r_param = 'tweet.url tweet.date tweet.user.username tweet.content '
+        t_header = ['URL', 'Date', 'User', 'Content']
     r_param = r_param.rstrip()
     r_param = re.sub(' ', ', ', r_param)
-    '''x="thisisploky"
-    y="x.upper()"
-    z=eval(y)
-    print(z)
-    '''
 
     def get_tweets(query, r_param):
         query = query
@@ -146,7 +146,6 @@ def download_tweets():
 
         dtweets = []
         for tweet in sntwitter.TwitterSearchScraper(dquery).get_items():
-            #print(tweet)
             if len(dtweets) == dlimits:
                 break
             else:
@@ -158,4 +157,4 @@ def download_tweets():
         return output
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=true)

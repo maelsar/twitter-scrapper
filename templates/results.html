@@ -17,14 +17,15 @@
             <a class="navbar-item" style="font-family: 'Montserrat Alternates', sans-serif; font-size: 30px;" href="/">
               Twitter Scraper
             </a>
-            <span class="navbar-burger" data-target="navbarMenuHeroA">
+            <span class="navbar-burger" id="burger">
               <span></span>
               <span></span>
               <span></span>
             </span>
+            
           </div>
           <div id="navbarMenuHeroA" class="navbar-menu">
-            <div class="navbar-end">
+            <div class="navbar-end" id="nav-links">
               <a class="navbar-item is-active" href="/">
                 Find Tweets
               </a>
@@ -47,6 +48,7 @@
           Displaying a sample output of only the first 5 results with your parameters. 
         </p>
         <p>
+          <div style="overflow-y: auto;">
             <table class="table is-striped is-narrow is-hoverable">
                 <tr>
                     <th>Index</th>
@@ -64,7 +66,8 @@
                     {% endfor %}
                 </tr>
                 {% endfor %}
-            </table> 
+            </table>
+          </div>
         </p>
         <p>
             <form action="/results" method="POST">
@@ -99,5 +102,6 @@
     </footer>
   <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <script src="../static/index.js"></script>
   </body>
 </html>
